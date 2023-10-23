@@ -47,8 +47,9 @@ const usersModel = {
                 email = ?
     `, 
 //movi aqui
-    updateUser: ` ////updateRow
-         UPDATE Users
+    updateRow: `
+         UPDATE 
+            Users
          SET 
              username = ?,
              email = ?,
@@ -56,6 +57,7 @@ const usersModel = {
              name = ?,
              lastname = ?,
              phone_number = ?,
+             role_id = ?,
              is_active = ?
          WHERE
              id = ?
