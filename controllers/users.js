@@ -150,24 +150,34 @@ let user = [
 
   try {
     conn = await pool.getConnection();
-    const [userExist] = await conn.query()
+    const [userExist] = await conn.query(
     usersModel.getByID,
     [id],
     (err) => {throw err;}
-
+    )
   if (!userExist ||  userExist.is_active == 0) {
     res.status(404).json({msg:'User not found'});
     return;
   }
 
-  if (username == userExist.username){
-    res.status(409).json({msg:'Usrname alredy exist'});
-    return;
+  const [usernameUser] = await conn.query(
+    usersModel.getByUsername,
+    [username],
+    (err) => {if (err) throw err;}
+  );
+  if (usernameUser) {
+      res.status(409).json({msg: `User with username ${username} alredy exist`});
+      return;
   }
 
-  if (username == userExist.email){
-    res.status(409).json({msg:'Email alredy exist'});
-    return;
+  const [emailUser] = await conn.query(
+      usersModel.getByEmail,
+      [email],
+      (err) => {if (err) throw err;}
+  );
+  if (emailUser) {
+      res.status(409).json({msg: `User with username ${email} alredy exist`});
+      return;
   }
 
   let oldUser = [
@@ -187,7 +197,7 @@ let user = [
     };
   })
 
-  const [userUpdate] = conn.query(
+  const userUpdate = conn.query(
     usersModel.updateRow,
     [...user,id],
     (err) => {
