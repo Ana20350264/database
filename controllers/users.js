@@ -146,13 +146,16 @@ const updateUser = async (req = request, res = response) => {
     is_active
 } = req.body;
 
-const saltRounds = 10;
-const passwordHash = await bcrypt.hash (password,saltRounds);
+let passwordHash
+if (password){
+  const saltRounds = 10;
+  passwordHash = await bcrypt.hash(password, saltRounds);
+}
 
 let user = [    
   username,
   email,
-  password,
+  passwordHash,
   name,
   lastname,
   phone_number,
